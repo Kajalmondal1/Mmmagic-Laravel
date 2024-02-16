@@ -1,0 +1,17 @@
+User type :
+-> Admin (who can see all the post but can't edit but he can delete it)
+-> User (user can see his own Post and others but he can modify his own post only. User can likes other posts as well)
+
+->A user can see post without login but can't like it
+->Only a admin can set a user as admin and can withdraw as admin 
+->What is Post => A post is information about some topics.In a post user have to give these following things (Title,Description,Image).Under every post there should be profile pics and author name.
+->A user will notify when Admin deleted his posts.
+->Admin can't change users basic Information but he can delete his profile or basically blocked.
+->If a user found to post adult or religious post admin can block him for 7 days.
+->If in a post there is 7 block or report user will block for 7 days.
+->Let's a post is valid but some users intensionally target a particular user and reported at that post then admin can unblocked that post.
+->User can connect to admin for personally unblock that post by post id.
+->we have to maintain how many users likes a post and who they are and same for block or report.
+->If a user deleted his account he can got that account again with in 5 days.
+->User reset their password there were two options One through Mail and one through reset Link.
+-> 

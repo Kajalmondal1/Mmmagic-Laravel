@@ -1,0 +1,5 @@
+User / Admin Table : 
+id | first name | last name | password | isAdmin | email | mobile | image
+
+Blog/Post Table :
+id | Userid/Adminid | Title | img | content | likes | likedBy | reported | reportedBy
