@@ -1,6 +1,6 @@
 Backend
 1>Registration,Login,Logout,(using JWT)
-2>Blog create,blog reterieve,Blog delete
+2>Blog create,blog reterieve,Blog delete (Using JWT Authentication)
 3>
 4>
 5>
