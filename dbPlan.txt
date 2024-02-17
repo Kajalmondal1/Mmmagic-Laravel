@@ -3,3 +3,5 @@ id | first name | last name | password | isAdmin | email | mobile | image
 
 Blog/Post Table :
 id | Userid/Adminid | Title | img | content | likes | likedBy | reported | reportedBy
+
+For Likes & reports We are going to create Separate Table So Iam not adding the likes,liked by,reported and reported by.
