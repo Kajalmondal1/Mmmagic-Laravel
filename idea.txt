@@ -12,6 +12,6 @@ User type :
 ->Let's a post is valid but some users intensionally target a particular user and reported at that post then admin can unblocked that post.
 ->User can connect to admin for personally unblock that post by post id.
 ->we have to maintain how many users likes a post and who they are and same for block or report.
-->If a user deleted his account he can got that account again with in 5 days.
+->If a user deleted his account he can got that account again with in 7 days.
 ->User reset their password there were two options One through Mail and one through reset Link.
 -> 

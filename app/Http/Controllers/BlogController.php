@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use  App\Services\S3Upload;
 
 class BlogController extends Controller
 {
@@ -21,7 +22,8 @@ class BlogController extends Controller
             return response()->json(["status" => false, "message" => $validator->errors()], 422);
         }
         else{
-            $imgLink= "https://php-file-upload-learning.s3.ap-southeast-2.amazonaws.com/Mmagic/Kajal-Mondal1708086341.png";
+            $getImage=new S3Upload;
+            $imgLink=$getImage->uploadFile($request,Auth::user()->firstname."-".Auth::user()->lastname,'img');
             $validatedPostData=[
                 'creator_id'=>Auth::user()->id,
                 'Title'=>$request->title,

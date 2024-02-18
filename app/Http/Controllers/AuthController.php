@@ -9,7 +9,8 @@ use Aws\S3\S3Client;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
-
+use  App\Services\S3Upload;
+use App\Services\customMail;
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -37,21 +38,9 @@ class AuthController extends Controller
             ]);
 
 
-            $image = $request->file('image');
-            $filename =$request->firstname.'-'.$request->lastname. time() . '.' . $image->getClientOriginalExtension();
-            try {
-                $result = $s3->putObject([
-                    'Bucket' => env('AWS_BUCKET'),
-                    'Key' => 'Mmagic/' .  $filename, // Adjust the S3 key as needed
-                    'Body' => fopen($image->getRealPath(), 'rb'),
-                    'ACL' => 'public-read',
-                ]);
-                $path=$result['ObjectURL'];
-                
-            } catch (\Throwable $th) {
-                Log::info($th);
-                $path="";
-            }
+
+            $getImage=new S3Upload;
+            $path=$getImage->uploadFile($request,$request->firstname."-".$request->lastname,'image');
             $validatedData = [
                 'first_name' => $request->firstname,
                 'last_name' => $request->lastname,
@@ -61,6 +50,10 @@ class AuthController extends Controller
                 'image' => $path
             ];
             $user=User::create($validatedData);
+            $mailTrigger=new customMail;
+            $receipients=['to'=>$request->email];
+            $userInfo=['name'=>$request->firstname];
+            $mailTrigger->sendMail($receipients,'emails.registerEmail',"Registered Sucessfully",$userInfo);
             if($user){
                 return response()->json(["status" => true, "message" => "User Registered","user" => $validatedData], 201);
             }
@@ -99,5 +92,16 @@ class AuthController extends Controller
     }
     public function refreshToken(Request $request)
     {
+    }
+    public function forgotPassword(Request $request){
+        $validator = Validator::make($request->all(), [
+            'email' => 'email | required | string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(["status" => false, "message" => $validator->errors()], 422);
+        }
+        else{
+            
+        }
     }
 }
