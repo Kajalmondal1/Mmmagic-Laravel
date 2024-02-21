@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 class customMail{
-    public function sendMail($recipient,$template,$subject,$data){
+    public function sendMail($recipient,$template,$subject,$data=""){
         try {
             Mail::send($template, ['data'=>$data], function ($message) use ($recipient,$subject) {
                 if($recipient['to']){

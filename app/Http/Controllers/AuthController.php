@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\forgotPasswordTokens;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,6 +12,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
 use  App\Services\S3Upload;
 use App\Services\customMail;
+use Illuminate\Support\Str;
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -102,6 +104,46 @@ class AuthController extends Controller
         }
         else{
             
+
+            $user=User::where('email', $request->email)->first();
+            if($user){
+                $mailTrigger=new customMail;
+                $gen_Link= uniqid().time().Str::random(10);
+                //Status -> 0 means not visited
+                //Status -> 1 means  visited
+                //Status -> 2 means  expired
+                Log::info("Link ".$gen_Link);
+                forgotPasswordTokens::create([
+                    'user_id' => $user->id,
+                    'link' => $gen_Link,
+                    'status' => 0
+                ]);
+                $receipients=['to'=>$request->email];
+                $info=$gen_Link;
+                $mailTrigger->sendMail($receipients,'emails.resetPassword',"Reset Password Link",$info);
+
+                return response()->json(["status" => true, "message" => "We have sent a Reset Password Link to your Mail. You can Reset it from there."], 200);
+            }
+            else{
+                return response()->json(["status" => false, "message" => "Email does not exists in our database.Register first"], 422);
+            }
+        }
+    }
+    public function resetPassword(Request $request,$link){
+        $validator = Validator::make($request->all(), [
+            'password' => 'string | required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(["status" => false, "message" => $validator->errors()], 422);
+        }
+        $token=forgotPasswordTokens::where('link',$link)->where('status',0)->first();
+        forgotPasswordTokens::where('link',$link)->update(['status' =>1]);
+        if($token){
+            User::where('id',$token->user_id)->update(['password' => bcrypt($request->password)]);
+            return response()->json(["status" => true, "message" => "Password updated successfully"], 200);
+        }
+        else{
+            return response()->json(["status" => false, "message" => "Invalid link"], 422);
         }
     }
 }

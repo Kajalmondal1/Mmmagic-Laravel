@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
+Route::post('/forgot-password',[AuthController::class,'forgotPassword']);
+Route::post('/reset-password/{link}',[AuthController::class,'resetPassword']);
+// Route::get('/reset-password/{link}',[AuthController::class,'resetPassword']); //create a view and then activate this route
 Route::get('profile',[AuthController::class,'getDetails'])->middleware('jwtVerify');
 Route::post('createblog',[BlogController::class,'createBlog'])->middleware('jwtVerify');
 Route::get('get-all-blog',[BlogController::class,'getAllBlog'])->middleware('jwtVerify');
