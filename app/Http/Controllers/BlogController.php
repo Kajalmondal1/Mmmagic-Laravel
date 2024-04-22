@@ -50,6 +50,7 @@ class BlogController extends Controller
         }
     }
     public function deleteBlog($BlogId){
+        //Delete the blog
         $user_id=Auth::user()->id;
         $blog=Blog::where('id',$BlogId)->where('creator_id',$user_id);
         if($blog){
