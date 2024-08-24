@@ -29,20 +29,23 @@ class AuthController extends Controller
             return response()->json(["status" => false, "message" => $validator->errors()], 422);
         } else {
 
+            try {
 
-            $s3 = new S3Client([
-                'version' => 'latest',
-                'region' => env('AWS_DEFAULT_REGION'),
-                'credentials' => [
-                    'key' => env('AWS_ACCESS_KEY_ID'),
-                    'secret' => env('AWS_SECRET_ACCESS_KEY'),
-                ],
-            ]);
-
-
-
-            $getImage=new S3Upload;
-            $path=$getImage->uploadFile($request,$request->firstname."-".$request->lastname,'image');
+                $s3 = new S3Client([
+                    'version' => 'latest',
+                    'region' => env('AWS_DEFAULT_REGION'),
+                    'credentials' => [
+                        'key' => env('AWS_ACCESS_KEY_ID'),
+                        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+                    ],
+                ]);
+    
+                $getImage=new S3Upload;
+                $path=$getImage->uploadFile($request,$request->firstname."-".$request->lastname,'image');
+            } catch (\Exception $e) {
+                Log::info("Error is ".$e->getMessage());
+                $path = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa5Hfgzc60D5cgiQQX-nj-j7_eFHxqpwQmVw&s";
+            }
             $validatedData = [
                 'first_name' => $request->firstname,
                 'last_name' => $request->lastname,
@@ -91,6 +94,8 @@ class AuthController extends Controller
     }
     public function logout()
     {
+        Auth::logout();
+        return response()->json(['status'=>true,"message"=>"Logged out successfully"]);
     }
     public function refreshToken(Request $request)
     {
