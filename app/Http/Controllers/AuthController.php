@@ -95,6 +95,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
+        // Can we add try catch here
         return response()->json(['status'=>true,"message"=>"Logged out successfully"]);
     }
     public function refreshToken(Request $request)
